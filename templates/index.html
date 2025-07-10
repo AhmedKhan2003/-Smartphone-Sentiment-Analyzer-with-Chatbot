@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daraz-Bot</title>
+    <style>
+        body {
+            font-family: Courier New, monospace;
+            margin: 0;
+            padding: 0;
+            background-color: #00FFFF;
+        }
+
+        #chat-container {
+            width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #chatbox {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        #userInput {
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #eee;
+            border-top: 1px solid #ddd;
+        }
+
+        #textInput {
+            flex: 1;
+            border: none;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        #sendButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            overflow-wrap: break-word;
+        }
+
+        .userText {
+            text-align: right;
+            color: #333;
+        }
+
+        .userText span {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            display: inline-block;
+            max-width: 70%;
+        }
+
+        .botText {
+            text-align: left;
+            color: #333;
+        }
+
+        .botText span {
+            background-color: #2196F3;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            display: inline-block;
+            max-width: 70%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .response-container {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h1>AI-Gen ChatBot</h1>
+        <div id="chatbox">
+            <div class="botText">
+                <span>Hello! I'm the all powerful Daraz Bot. Ask me anything!</span>
+            </div>
+        </div>
+        <div id="userInput">
+            <input id="textInput" type="text" name="msg" placeholder="Type your message here" />
+            <button id="sendButton" onclick="getBotResponse()">Send</button>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        function getBotResponse() {
+            var rawText = $("#textInput").val();
+            var userHtml = '<div class="userText"><span>' + rawText + "</span></div>";
+            $("#textInput").val("");
+            $("#chatbox").append(userHtml).animate({ scrollTop: $("#chatbox")[0].scrollHeight }, 1000);
+
+            $.get("/get", { msg: rawText }).done(function (data) {
+                var botHtml = '<div class="botText"><span>' + data.response + "</span></div>";
+                $("#chatbox").append(botHtml).animate({ scrollTop: $("#chatbox")[0].scrollHeight }, 1000);
+            });
+        }
+
+        $("#textInput").keypress(function (e) {
+            if (e.which == 13) {
+                getBotResponse();
+            }
+        });
+    </script>
+</body>
+</html>
